@@ -10,7 +10,9 @@
 #include <unistd.h>
 #endif
 #include <string.h>
+
 #pragma comment(lib, "ws2_32.lib") // 加载 ws2_32.lib
+
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -58,6 +60,7 @@ int main(int argc, char *argv[])
 
     strcpy(buf, "send from client");
     len = send(sock, buf, strlen(buf), 0);
+
     close(sock);
 
     return 0;

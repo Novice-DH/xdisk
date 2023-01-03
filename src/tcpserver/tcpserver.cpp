@@ -1,14 +1,28 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <sys/types.h>
+#if _WIN32
+#include <windows.h>
+#define close closesocket
+#define socklen_t int
+#else
 #include <sys/socket.h>
 #include <arpa/inet.h> // 网络地址转换
 #include <unistd.h>    // close
+#endif
 #include <string.h>    // 字符集转换
+
+#pragma comment(lib, "ws2_32.lib") // 加载 ws2_32.lib
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
+    // Windows初始化socket库
+#ifdef _WIN32
+    WSADATA ws;
+    WSAStartup(MAKEWORD(2, 2), &ws);
+#endif
     unsigned short port = 8080;
     if (argc > 1)
     {
@@ -57,5 +71,6 @@ int main(int argc, char *argv[])
     }
 
     close(sock);
+
     return 0;
 }
