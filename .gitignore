@@ -2,6 +2,8 @@
 # custom/
 
 # temp files directories
+.vs
+x64
 # cache/
 # log/
 # *.swp
