@@ -4,6 +4,7 @@
 # temp files directories
 .vs
 x64
+Debug
 # cache/
 # log/
 # *.swp
