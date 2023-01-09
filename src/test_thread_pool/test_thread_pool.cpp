@@ -66,7 +66,7 @@ using namespace std;
 // void ReadCB(struct bufferevent *bev, void *ctx)
 // {
 //     cout << "+" << flush;
-//     char buf[1024] = {0};
+//     char buf[1024] = { 0 };
 //     int len = bufferevent_read(bev, buf, sizeof(buf) - 1);
 //     cout << buf << endl;
 

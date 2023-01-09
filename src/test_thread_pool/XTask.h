@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 class XTask
 {
 public:
@@ -6,6 +6,6 @@ public:
     int sock = 0;
     int thread_id = 0;
 
-    // ��ʼ������
+    // 初始化任务
     virtual bool Init() = 0;
 };

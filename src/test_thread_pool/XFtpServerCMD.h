@@ -3,7 +3,7 @@
 class XFtpServerCMD : public XTask
 {
 public:
-    // ��ʼ������
+    // 初始化任务
     virtual bool Init();
 
     XFtpServerCMD();

@@ -1,4 +1,4 @@
-#include "XThread.h"
+﻿#include "XThread.h"
 #include "XTask.h"
 #include <iostream>
 #include <thread>
@@ -10,23 +10,23 @@
 #endif
 using namespace std;
 
-// �����߳�����Ļص�����
+// 激活线程任务的回调函数
 static void NotifyCB(evutil_socket_t fd, short which, void *arg)
 {
     XThread *t = (XThread *)arg;
     t->Notify(fd, which);
 }
 
-// �յ����̷߳����ļ�����Ϣ���̳߳صķַ���
+// 收到主线程发出的激活消息（线程池的分发）
 void XThread::Notify(evutil_socket_t fd, short which)
 {
-    // ��ȡ��Ϣ
-    // ˮƽ������ֻҪû�н�����ɣ��ͻ��ٴν���
+    // 读取消息
+    // 水平触发，只要没有接收完成，就会再次进来
     char buf[2] = {0};
 #ifdef _WIN32
     int re = recv(fd, buf, 1, 0);
 #else
-    // Linux ���� pipe�������� recv
+    // Linux 中是 pipe，不能用 recv
     int re = read(fd, buf, 1);
 #endif
     if (re <= 0)
@@ -36,41 +36,41 @@ void XThread::Notify(evutil_socket_t fd, short which)
     cout << id << " thread " << buf << endl;
 
     XTask *task = nullptr;
-    // ��ȡ���񣬲���ʼ������
+    // 获取任务，并初始化任务
     tasks_mutex.lock();
     if (tasks.empty())
     {
-        tasks_mutex.unlock(); // ע�⣬return ֮ǰ���� Ҫ�ͷ�
+        tasks_mutex.unlock(); // 注意，return 之前，锁 要释放
         return;
     }
-    task = tasks.front(); // �Ƚ��ȳ�
+    task = tasks.front(); // 先进先出
     tasks.pop_front();
     tasks_mutex.unlock();
     task->Init();
 }
 
-// ���Ӵ���������һ���߳̿���ͬʱ����������񣬹���һ�� event_base
+// 添加处理的任务，一个线程可以同时处理多个任务，共用一个 event_base
 void XThread::AddTask(XTask *t)
 {
     if (!t)
     {
         return;
     }
-    // �� Dispatch �У���֪���߳� base����Ҫ����
-    // ������ base �������¼�
+    // 在 Dispatch 中，不知道线程 base，故要传递
+    // 可以往 base 里添加事件
     t->base = this->base;
     tasks_mutex.lock();
     tasks.push_back(t);
     tasks_mutex.unlock();
 }
 
-// �̵߳ļ���
+// 线程的激活
 void XThread::Activate()
 {
 #ifdef _WIN32
     int re = send(this->notify_send_fd, "c", 1, 0);
 #else
-    // Linux ���� pipe�������� send
+    // Linux 中是 pipe，不能用 send
     int re = write(this->notify_send_fd, "c", 1);
 #endif
     if (re <= 0)
@@ -79,41 +79,41 @@ void XThread::Activate()
     }
 }
 
-// �����߳�
+// 启动线程
 void XThread::Start()
 {
     Setup();
-    // �����߳�
-    // th ���������� Start ��
-    // �ص������ĵ�ַ��Main �ǳ�Ա�������ö������� this ����
+    // 启动线程
+    // th 生命周期在 Start 内
+    // 回调函数的地址，Main 是成员函数，用对象本身的 this 访问
     thread th(&XThread::Main, this);
 
-    // ���̻߳ᱣ��һ������Դ�����߳�����ϵ
-    // th ����֮���������
+    // 主线程会保留一部分资源与子线程相联系
+    // th 销毁之后会有问题
     //
-    // �������̣߳��Ͽ������̵߳���ϵ��
-    // ��ʹ th ���� �봴���õ��߳�Ҳû�й�ϵ��
+    // 清理主线程（断开与主线程的联系）
+    // 即使 th 销毁 与创建好的线程也没有关系了
     th.detach();
 }
 
-// ��װ�̣߳���ʼ�� event_base �� �ܵ������¼����ڼ���
+// 安装线程，初始化 event_base 和 管道监听事件用于激活
 bool XThread::Setup()
 {
-    // Windows �� socketpair��Linux �� pipe
+    // Windows 用 socketpair，Linux 用 pipe
 #ifdef _WIN32
-    // ����һ�� socketpair�����Ի���ͨ�ţ�fds[0] ����fds[1] д
+    // 创建一个 socketpair，可以互相通信，fds[0] 读，fds[1] 写
     evutil_socket_t fds[2];
     if (evutil_socketpair(AF_INET, SOCK_STREAM, 0, fds) < 0)
     {
         cout << "evutil_socketpair failed!" << endl;
         return false;
     }
-    // ���óɷ�����
+    // 设置成非阻塞
     evutil_make_socket_nonblocking(fds[0]);
     evutil_make_socket_nonblocking(fds[1]);
 #else
-    // ������ pipe���� read write ��ȡ
-    // ������ send, recv ��ȡ��socket ���ã�
+    // 创建的 pipe，用 read write 读取
+    // 不能用 send, recv 读取（socket 才用）
     int fds[2];
     if (pipe(fds))
     {
@@ -122,10 +122,10 @@ bool XThread::Setup()
     }
 #endif
 
-    // ��ȡ�󶨵� event �¼��У�д��Ҫ����
+    // 读取绑定到 event 事件中，写入要保存
     notify_send_fd = fds[1];
 
-    // ���� libevent �����ģ����������ο��� memcached
+    // 创建 libevent 上下文（无锁），参考自 memcached
     event_config *ev_conf = event_config_new();
     event_config_set_flag(ev_conf, EVENT_BASE_FLAG_NOLOCK);
     this->base = event_base_new_with_config(ev_conf);
@@ -136,15 +136,15 @@ bool XThread::Setup()
         return false;
     }
 
-    // ���� pipe �����¼������ڼ����߳�ִ������
-    // this ��ʾ��ǰ����ĵ�ַ
+    // 添加 pipe 监听事件，用于激活线程执行任务
+    // this 表示当前对象的地址
     event *ev = event_new(base, fds[0], EV_READ | EV_PERSIST, NotifyCB, this);
     event_add(ev, 0);
 
     return true;
 }
 
-// �߳���ں���
+// 线程入口函数
 void XThread::Main()
 {
     cout << id << " XThread::Main() begin!" << endl;
