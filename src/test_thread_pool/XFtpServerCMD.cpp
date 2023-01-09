@@ -2,38 +2,41 @@
 #include <iostream>
 #include <event2/event.h>
 #include <event2/bufferevent.h>
+#include <cstring>
 
 using namespace std;
 
-static void EventCB(struct bufferevent* bev, short what, void* arg)
+static void EventCB(struct bufferevent *bev, short what, void *arg)
 {
-    XFtpServerCMD* cmd = (XFtpServerCMD*)arg;
+    XFtpServerCMD *cmd = (XFtpServerCMD *)arg;
 
-    // Èô¶Ô·½ÍøÂç¶Ïµô£¬»ò»úÆ÷ËÀ»ú£¨Òì³£×´Ì¬£©ÓÐ¿ÉÄÜÊÕ²»µ½ BEV_EVENT_EOF Êý¾Ý
+    // ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì³£×´Ì¬ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½ï¿½Õ²ï¿½ï¿½ï¿½ BEV_EVENT_EOF ï¿½ï¿½ï¿½ï¿½
     if (what & (BEV_EVENT_EOF | BEV_EVENT_ERROR | BEV_EVENT_TIMEOUT))
     {
         cout << "BEV_EVENT_EOF | BEV_EVENT_ERROR | BEV_EVENT_TIMEOUT" << endl;
         bufferevent_free(bev);
-        delete cmd; // É¾³ý¶ÔÏó
+        delete cmd; // É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 }
 
-
-// ×ÓÏß³Ì XThread event ÊÂ¼þ·Ö·¢
-static void ReadCB(struct bufferevent* bev, void* arg)
+// ï¿½ï¿½ï¿½ß³ï¿½ XThread event ï¿½Â¼ï¿½ï¿½Ö·ï¿½
+static void ReadCB(struct bufferevent *bev, void *arg)
 {
-    XFtpServerCMD* cmd = (XFtpServerCMD*)arg;
-    char data[1024] = { 0 };
+    XFtpServerCMD *cmd = (XFtpServerCMD *)arg;
+    char data[1024] = {0};
     for (;;)
     {
         int len = bufferevent_read(bev, data, sizeof(data) - 1);
-        if (len <= 0) { break; }
-        data[len] = '\0'; // ´úÂë²ãÃæËµÃ÷ÊÇ¸³Ò»¸ö×Ö·û´®
+        if (len <= 0)
+        {
+            break;
+        }
+        data[len] = '\0'; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ç¸ï¿½Ò»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
         cout << data << flush;
 
-        // test code,need to clean up
-        // ÓÃ Windows cmd Á¬½Ó ÎÞ·¨ÍË³ö
-        // ÓÃ ubuntu Á¬½Ó ¿ÉÕý³£ÍË³ö
+        // test code, need to clean up
+        // ï¿½ï¿½ Windows cmd ï¿½ï¿½ï¿½ï¿½ ï¿½Þ·ï¿½ï¿½Ë³ï¿½
+        // ï¿½ï¿½ ubuntu ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½
         if (strstr(data, "quit"))
         {
             bufferevent_free(bev);
@@ -43,19 +46,19 @@ static void ReadCB(struct bufferevent* bev, void* arg)
     }
 }
 
-// ³õÊ¼»¯ÈÎÎñ ÔËÐÐÔÚ×ÓÏß³ÌÖÐ
+// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½ï¿½ï¿½
 bool XFtpServerCMD::Init()
 {
     cout << "XFtpServerCMD::Init()" << endl;
-    // ¼àÌý socket£¬ÓÃ bufferevent
-    // ÐèÒª base¡¢socket
+    // ï¿½ï¿½ï¿½ï¿½ socketï¿½ï¿½ï¿½ï¿½ bufferevent
+    // ï¿½ï¿½Òª baseï¿½ï¿½socket
 
-    bufferevent* bev = bufferevent_socket_new(base, sock, BEV_OPT_CLOSE_ON_FREE); // ¹Ø±ÕÊ±ÇåÀí socket
+    bufferevent *bev = bufferevent_socket_new(base, sock, BEV_OPT_CLOSE_ON_FREE); // ï¿½Ø±ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ socket
     bufferevent_setcb(bev, ReadCB, 0, EventCB, this);
-    bufferevent_enable(bev, EV_READ | EV_WRITE); // ÉèÖÃÈ¨ÏÞ
+    bufferevent_enable(bev, EV_READ | EV_WRITE); // ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½
 
-    // Ìí¼Ó³¬Ê±»úÖÆ£¨·ÀÖ¹Òì³£×´Ì¬£©ÓÐ¿ÉÄÜÊÕ²»µ½ BEV_EVENT_EOF Êý¾Ý
-    timeval rt = { 10, 0 };
+    // ï¿½ï¿½ï¿½Ó³ï¿½Ê±ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Ö¹ï¿½ì³£×´Ì¬ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½ï¿½Õ²ï¿½ï¿½ï¿½ BEV_EVENT_EOF ï¿½ï¿½ï¿½ï¿½
+    timeval rt = {10, 0};
     bufferevent_set_timeouts(bev, &rt, 0);
 
     return true;
@@ -63,10 +66,8 @@ bool XFtpServerCMD::Init()
 
 XFtpServerCMD::XFtpServerCMD()
 {
-
 }
 
 XFtpServerCMD::~XFtpServerCMD()
 {
-
 }

@@ -10,23 +10,23 @@
 #endif
 using namespace std;
 
-// ¼¤»îÏß³ÌÈÎÎñµÄ»Øµ÷º¯Êý
-static void NotifyCB(evutil_socket_t fd, short which, void* arg)
+// ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½ï¿½ï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½
+static void NotifyCB(evutil_socket_t fd, short which, void *arg)
 {
-    XThread* t = (XThread*)arg;
+    XThread *t = (XThread *)arg;
     t->Notify(fd, which);
 }
 
-// ÊÕµ½Ö÷Ïß³Ì·¢³öµÄ¼¤»îÏûÏ¢£¨Ïß³Ì³ØµÄ·Ö·¢£©
+// ï¿½Õµï¿½ï¿½ï¿½ï¿½ß³Ì·ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ß³Ì³ØµÄ·Ö·ï¿½ï¿½ï¿½
 void XThread::Notify(evutil_socket_t fd, short which)
 {
-    // ¶ÁÈ¡ÏûÏ¢
-    // Ë®Æ½´¥·¢£¬Ö»ÒªÃ»ÓÐ½ÓÊÕÍê³É£¬¾Í»áÔÙ´Î½øÀ´
-    char buf[2] = { 0 };
+    // ï¿½ï¿½È¡ï¿½ï¿½Ï¢
+    // Ë®Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ÒªÃ»ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½ï¿½Í»ï¿½ï¿½Ù´Î½ï¿½ï¿½ï¿½
+    char buf[2] = {0};
 #ifdef _WIN32
     int re = recv(fd, buf, 1, 0);
 #else
-    // Linux ÖÐÊÇ pipe£¬²»ÄÜÓÃ recv
+    // Linux ï¿½ï¿½ï¿½ï¿½ pipeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ recv
     int re = read(fd, buf, 1);
 #endif
     if (re <= 0)
@@ -35,39 +35,42 @@ void XThread::Notify(evutil_socket_t fd, short which)
     }
     cout << id << " thread " << buf << endl;
 
-    XTask* task = nullptr;
-    // »ñÈ¡ÈÎÎñ£¬²¢³õÊ¼»¯ÈÎÎñ
+    XTask *task = nullptr;
+    // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ñ£¬²ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     tasks_mutex.lock();
     if (tasks.empty())
     {
-        tasks_mutex.unlock(); // ×¢Òâ£¬return Ö®Ç°£¬Ëø ÒªÊÍ·Å
+        tasks_mutex.unlock(); // ×¢ï¿½â£¬return Ö®Ç°ï¿½ï¿½ï¿½ï¿½ Òªï¿½Í·ï¿½
         return;
     }
-    task = tasks.front(); // ÏÈ½øÏÈ³ö
+    task = tasks.front(); // ï¿½È½ï¿½ï¿½È³ï¿½
     tasks.pop_front();
     tasks_mutex.unlock();
     task->Init();
 }
 
-// Ìí¼Ó´¦ÀíµÄÈÎÎñ£¬Ò»¸öÏß³Ì¿ÉÒÔÍ¬Ê±´¦Àí¶à¸öÈÎÎñ£¬¹²ÓÃÒ»¸ö event_base
-void XThread::AddTask(XTask* t)
+// ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ß³Ì¿ï¿½ï¿½ï¿½Í¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ£¬¹ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ event_base
+void XThread::AddTask(XTask *t)
 {
-    if (!t) { return; }
-    // ÔÚ Dispatch ÖÐ£¬²»ÖªµÀÏß³Ì base£¬¹ÊÒª´«µÝ
-    // ¿ÉÒÔÍù base ÀïÌí¼ÓÊÂ¼þ
+    if (!t)
+    {
+        return;
+    }
+    // ï¿½ï¿½ Dispatch ï¿½Ð£ï¿½ï¿½ï¿½Öªï¿½ï¿½ï¿½ß³ï¿½ baseï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ base ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
     t->base = this->base;
     tasks_mutex.lock();
     tasks.push_back(t);
     tasks_mutex.unlock();
 }
 
-// Ïß³ÌµÄ¼¤»î
+// ï¿½ß³ÌµÄ¼ï¿½ï¿½ï¿½
 void XThread::Activate()
 {
 #ifdef _WIN32
     int re = send(this->notify_send_fd, "c", 1, 0);
 #else
-    // Linux ÖÐÊÇ pipe£¬²»ÄÜÓÃ send
+    // Linux ï¿½ï¿½ï¿½ï¿½ pipeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ send
     int re = write(this->notify_send_fd, "c", 1);
 #endif
     if (re <= 0)
@@ -76,54 +79,54 @@ void XThread::Activate()
     }
 }
 
-// Æô¶¯Ïß³Ì
+// ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
 void XThread::Start()
 {
     Setup();
-    // Æô¶¯Ïß³Ì
-    // th ÉúÃüÖÜÆÚÔÚ Start ÄÚ
-    // »Øµ÷º¯ÊýµÄµØÖ·£¬Main ÊÇ³ÉÔ±º¯Êý£¬ÓÃ¶ÔÏó±¾ÉíµÄ this ·ÃÎÊ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
+    // th ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Start ï¿½ï¿½
+    // ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·ï¿½ï¿½Main ï¿½Ç³ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ this ï¿½ï¿½ï¿½ï¿½
     thread th(&XThread::Main, this);
 
-    // Ö÷Ïß³Ì»á±£ÁôÒ»²¿·Ö×ÊÔ´Óë×ÓÏß³ÌÏàÁªÏµ
-    // th Ïú»ÙÖ®ºó»áÓÐÎÊÌâ
-    // 
-    // ÇåÀíÖ÷Ïß³Ì£¨¶Ï¿ªÓëÖ÷Ïß³ÌµÄÁªÏµ£©
-    // ¼´Ê¹ th Ïú»Ù Óë´´½¨ºÃµÄÏß³ÌÒ²Ã»ÓÐ¹ØÏµÁË
+    // ï¿½ï¿½ï¿½ß³Ì»á±£ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ
+    // th ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    //
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³Ì£ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³Ìµï¿½ï¿½ï¿½Ïµï¿½ï¿½
+    // ï¿½ï¿½Ê¹ th ï¿½ï¿½ï¿½ï¿½ ï¿½ë´´ï¿½ï¿½ï¿½Ãµï¿½ï¿½ß³ï¿½Ò²Ã»ï¿½Ð¹ï¿½Ïµï¿½ï¿½
     th.detach();
 }
 
-// °²×°Ïß³Ì£¬³õÊ¼»¯ event_base ºÍ ¹ÜµÀ¼àÌýÊÂ¼þÓÃÓÚ¼¤»î
+// ï¿½ï¿½×°ï¿½ß³Ì£ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ event_base ï¿½ï¿½ ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½
 bool XThread::Setup()
 {
-    // Windows ÓÃ socketpair£¬Linux ÓÃ pipe
+    // Windows ï¿½ï¿½ socketpairï¿½ï¿½Linux ï¿½ï¿½ pipe
 #ifdef _WIN32
-    // ´´½¨Ò»¸ö socketpair£¬¿ÉÒÔ»¥ÏàÍ¨ÐÅ£¬fds[0] ¶Á£¬fds[1] Ð´
+    // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ socketpairï¿½ï¿½ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½Í¨ï¿½Å£ï¿½fds[0] ï¿½ï¿½ï¿½ï¿½fds[1] Ð´
     evutil_socket_t fds[2];
     if (evutil_socketpair(AF_INET, SOCK_STREAM, 0, fds) < 0)
     {
         cout << "evutil_socketpair failed!" << endl;
         return false;
     }
-    // ÉèÖÃ³É·Ç×èÈû
+    // ï¿½ï¿½ï¿½Ã³É·ï¿½ï¿½ï¿½ï¿½ï¿½
     evutil_make_socket_nonblocking(fds[0]);
     evutil_make_socket_nonblocking(fds[1]);
 #else
-    // ´´½¨µÄ pipe£¬ÓÃ read write ¶ÁÈ¡
-    // ²»ÄÜÓÃ send, recv ¶ÁÈ¡£¨socket ²ÅÓÃ£©
-    ind fds[2];
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ pipeï¿½ï¿½ï¿½ï¿½ read write ï¿½ï¿½È¡
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ send, recv ï¿½ï¿½È¡ï¿½ï¿½socket ï¿½ï¿½ï¿½Ã£ï¿½
+    int fds[2];
     if (pipe(fds))
     {
         cerr << "pipe failed!" << endl;
         return false;
-}
+    }
 #endif
 
-    // ¶ÁÈ¡°ó¶¨µ½ event ÊÂ¼þÖÐ£¬Ð´ÈëÒª±£´æ
+    // ï¿½ï¿½È¡ï¿½ó¶¨µï¿½ event ï¿½Â¼ï¿½ï¿½Ð£ï¿½Ð´ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
     notify_send_fd = fds[1];
 
-    // ´´½¨ libevent ÉÏÏÂÎÄ£¨ÎÞËø£©£¬²Î¿¼×Ô memcached
-    event_config* ev_conf = event_config_new();
+    // ï¿½ï¿½ï¿½ï¿½ libevent ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ memcached
+    event_config *ev_conf = event_config_new();
     event_config_set_flag(ev_conf, EVENT_BASE_FLAG_NOLOCK);
     this->base = event_base_new_with_config(ev_conf);
     event_config_free(ev_conf);
@@ -133,15 +136,15 @@ bool XThread::Setup()
         return false;
     }
 
-    // Ìí¼Ó pipe ¼àÌýÊÂ¼þ£¬ÓÃÓÚ¼¤»îÏß³ÌÖ´ÐÐÈÎÎñ
-    // this ±íÊ¾µ±Ç°¶ÔÏóµÄµØÖ·
-    event* ev = event_new(base, fds[0], EV_READ | EV_PERSIST, NotifyCB, this);
+    // ï¿½ï¿½ï¿½ï¿½ pipe ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½ï¿½ß³ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // this ï¿½ï¿½Ê¾ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·
+    event *ev = event_new(base, fds[0], EV_READ | EV_PERSIST, NotifyCB, this);
     event_add(ev, 0);
 
     return true;
 }
 
-// Ïß³ÌÈë¿Úº¯Êý
+// ï¿½ß³ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½
 void XThread::Main()
 {
     cout << id << " XThread::Main() begin!" << endl;
@@ -152,10 +155,8 @@ void XThread::Main()
 
 XThread::XThread()
 {
-
 }
 
 XThread::~XThread()
 {
-
 }

@@ -1,30 +1,29 @@
 #pragma once
 #include <vector>
 
-class XThread; // 只声明一下类型，而不去引用其头文件，防止多重引用
+class XThread; // 只锟斤拷锟斤拷一锟斤拷锟斤拷锟酵ｏ拷锟斤拷锟斤拷去锟斤拷锟斤拷锟斤拷头锟侥硷拷锟斤拷锟斤拷止锟斤拷锟斤拷锟斤拷锟斤拷
 class XTask;
 
 class XThreadPool
 {
 public:
-    // 单件模式：只维系一个对象
-    static XThreadPool* Get()
+    // 锟斤拷锟斤拷模式锟斤拷只维系一锟斤拷锟斤拷锟斤拷
+    static XThreadPool *Get()
     {
         static XThreadPool p;
         return &p;
     }
-    // 初始化所有线程，并启动线程
+    // 锟斤拷始锟斤拷锟斤拷锟斤拷锟竭程ｏ拷锟斤拷锟斤拷锟斤拷锟竭筹拷
     void Init(int threadCount);
 
-    // 分发线程
-    void Dispatch(XTask* task);
+    // 锟街凤拷锟竭筹拷
+    void Dispatch(XTask *task);
 
 private:
-    // 线程数量
+    // 锟竭筹拷锟斤拷锟斤拷
     int threadCount = 0;
     int lastThread = -1;
-    // 线程池线程
-    std::vector<XThread*>threads;
-    XThreadPool() {};
+    // 锟竭程筹拷锟竭筹拷
+    std::vector<XThread *> threads;
+    XThreadPool(){};
 };
-

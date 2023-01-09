@@ -6,32 +6,35 @@
 
 using namespace std;
 
-// ·Ö·¢Ïß³Ì
-void XThreadPool::Dispatch(XTask* task)
+// ï¿½Ö·ï¿½ï¿½ß³ï¿½
+void XThreadPool::Dispatch(XTask *task)
 {
-    // ÂÖÑ¯ ÕÒµ½ ºÏÊÊÏß³Ì
-    if (!task) { return; }
+    // ï¿½ï¿½Ñ¯ ï¿½Òµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
+    if (!task)
+    {
+        return;
+    }
     int tid = (lastThread + 1) % threadCount;
     lastThread = tid;
-    XThread* t = threads[tid];
+    XThread *t = threads[tid];
 
     t->AddTask(task);
 
-    // ¼¤»îÏß³Ì
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
     t->Activate();
 }
 
-// ³õÊ¼»¯ËùÓÐÏß³Ì£¬²¢Æô¶¯Ïß³Ì
+// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³Ì£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
 void XThreadPool::Init(int threadCount)
 {
-    this->threadCount = threadCount; // ²ÎÊýÃû²»Óë³ÉÔ±ÃûÒ»ÖÂ
+    this->threadCount = threadCount; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½Ò»ï¿½ï¿½
     this->lastThread = -1;
     for (int i = 0; i < threadCount; ++i)
     {
-        XThread* t = new XThread();
+        XThread *t = new XThread();
         t->id = i + 1;
         cout << "Create thread " << i << endl;
-        // Æô¶¯Ïß³Ì
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
         t->Start();
         threads.push_back(t);
         this_thread::sleep_for(10ms);

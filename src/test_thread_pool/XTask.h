@@ -2,11 +2,10 @@
 class XTask
 {
 public:
-    struct event_base* base = 0;
+    struct event_base *base = 0;
     int sock = 0;
     int thread_id = 0;
 
-    // ³õÊ¼»¯ÈÎÎñ
+    // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     virtual bool Init() = 0;
 };
-
