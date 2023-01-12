@@ -1,6 +1,6 @@
 ﻿TARGET=libxcom.so
 OBJS=xserver_task.o xthread.o xthread_pool.o
-CPPFLAS= -fPIC # 编译选项
+CPPFLAGS= -fPIC # 编译选项
 LIBS=-levent -lpthread
 $(TARGET):$(OBJS)
 	g++ -shared $^ -o $@ $(LIBS)

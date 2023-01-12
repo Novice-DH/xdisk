@@ -1,7 +1,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
-#include <singal.h>
+#include <signal.h>
 #endif
 
 #include "xthread_pool.h"
