@@ -23,22 +23,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="xdisk_gui.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
-    <QtUic Include="xdisk_gui.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtMoc Include="xdisk_gui.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="xdisk_gui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xdisk_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <QtMoc Include="xdisk_gui.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="xdisk_gui.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="xdisk_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="xdisk_gui.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
   </ItemGroup>
 </Project>

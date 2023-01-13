@@ -148,16 +148,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
     <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="xcom_task.h" />
     <ClInclude Include="xserver_task.h" />
     <ClInclude Include="xtask.h" />
     <ClInclude Include="xthread.h" />
     <ClInclude Include="xthread_pool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="xcom_task.cpp" />
     <ClCompile Include="xserver_task.cpp" />
     <ClCompile Include="xthread.cpp" />
     <ClCompile Include="xthread_pool.cpp" />

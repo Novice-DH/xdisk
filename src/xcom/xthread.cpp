@@ -22,7 +22,7 @@ void XThread::Notify(int fd, short which)
 {
     // 读取消息
     // 水平触发，只要没有接收完成，就会再次进来
-    char buf[2] = {0};
+    char buf[2] = { 0 };
 #ifdef _WIN32
     int re = recv(fd, buf, 1, 0);
 #else
@@ -148,6 +148,12 @@ bool XThread::Setup()
 void XThread::Main()
 {
     cout << id << " XThread::Main() begin!" << endl;
+    if (!base_)
+    {
+        cerr << "XThread::Main() failed! base_ is null." << endl;
+        cerr << "In Windows set WSAStartup(MAKEWORD(2, 2), &wsa)" << endl;
+        return;
+    }
     event_base_dispatch(base_);
     event_base_free(base_);
     cout << id << " XThread::Main() end!" << endl;

@@ -15,7 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
     <None Include="Makefile">
       <Filter>源文件</Filter>
     </None>
@@ -33,6 +32,9 @@
     <ClInclude Include="xserver_task.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="xcom_task.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xthread.cpp">
@@ -42,6 +44,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="xserver_task.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="xcom_task.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
