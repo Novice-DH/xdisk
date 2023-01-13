@@ -6,6 +6,7 @@
 
 #include "xthread_pool.h"
 #include "xserver_task.h"
+#include "xfile_server_task.h"
 #include <iostream>
 #include <thread>
 
@@ -13,6 +14,9 @@ using namespace std;
 
 static void ListenCB(int sock, struct sockaddr *addr, int socklen, void *arg)
 {
+    auto task = new XFileServerTask();
+    task->set_sock(sock);
+    XThreadPool::Get()->Dispatch(task);
     cout << "ListenCB in main" << endl;
 }
 

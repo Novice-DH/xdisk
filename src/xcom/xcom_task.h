@@ -12,6 +12,13 @@ public:
 
     void set_server_ip(std::string ip) { this->server_ip_ = ip; }
     void set_port(int port) { this->server_port_ = port; }
+    void EventCB(short what);
+    void ReadCB();
+
+    // 子类亦可访问
+protected:
+    // 读取缓冲
+    char read_buf_[4096] = { 0 };
 
 private:
     // 服务器 IP

@@ -18,5 +18,13 @@
     <ClCompile Include="xdisk_server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="xfile_server_task.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="xfile_server_task.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
