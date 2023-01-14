@@ -35,6 +35,9 @@
     <ClInclude Include="xcom_task.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="xmsg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xthread.cpp">

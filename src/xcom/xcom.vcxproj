@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xcom_task.h" />
+    <ClInclude Include="xmsg.h" />
     <ClInclude Include="xserver_task.h" />
     <ClInclude Include="xtask.h" />
     <ClInclude Include="xthread.h" />
