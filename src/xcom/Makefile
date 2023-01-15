@@ -1,5 +1,5 @@
 ﻿TARGET=libxcom.so
-OBJS=xserver_task.o xthread.o xthread_pool.o
+OBJS=xserver_task.o xthread.o xthread_pool.o xcom_task.o xtools.o
 CPPFLAGS= -fPIC # 编译选项
 LIBS=-levent -lpthread
 $(TARGET):$(OBJS)

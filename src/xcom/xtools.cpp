@@ -2,6 +2,11 @@
 
 #ifdef _WIN32
 #include <io.h>
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <dirent.h>
 #endif
 
 using namespace std;
@@ -32,6 +37,29 @@ XCOM_API std::string GetDirData(std::string path)
         data += buf;
     } while (_findnext(dir, &file) == 0);
 #else
+    const char *dir = path.c_str();
+    DIR *dp = 0;
+    struct dirent *entry = 0; // 遍历文件的一个内部节点
+    struct stat statbuf;
+    dp = opendir(dir); // 打开路径
+    if (dp == nullptr)
+    {
+        return data;
+    }
+    chdir(dir); // 切换到目标路径
+    // 开始遍历路径
+    char buf[1024] = {0};
+    while ((entry = readdir(dp)) != nullptr)
+    {
+        lstat(entry->d_name, &statbuf);
+        if (S_ISDIR(statbuf.st_mode)) // 略过目录
+        {
+            continue;
+        }
+        sprintf(buf, "%s,%ld;", entry->d_name, statbuf.st_size);
+        data += buf;
+    }
+
 #endif
     // 去掉结尾 ;
     if (!data.empty())
