@@ -18,11 +18,8 @@ void XComTask::EventCB(short what)
     {
         cout << "BEV_EVENT_CONNECTED" << endl;
         // bufferevent_write(bev_, "OK", 3);
-        XMsg msg;
-        msg.type = MSG_GETDIR;
-        msg.size = 3;
-        msg.data = (char *)"./";
-        WriteCB(&msg);
+        // 通知连接建立成功
+        ConnectedCB();
     }
 
     // 退出要处理缓冲内容（发送缓冲、读取缓冲）

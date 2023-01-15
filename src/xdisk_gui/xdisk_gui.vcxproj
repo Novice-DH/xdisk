@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="xdir_task.cpp" />
     <ClCompile Include="xdisk_client.cpp" />
     <ClCompile Include="xdisk_gui.cpp" />
   </ItemGroup>
@@ -22,7 +23,8 @@
     <QtUic Include="xdisk_gui.ui" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="xdisk_client.h" />
+    <ClInclude Include="xdir_task.h" />
+    <QtMoc Include="xdisk_client.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="xdisk_gui.qrc" />

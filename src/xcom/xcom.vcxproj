@@ -87,7 +87,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;XCOM_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;XCOM_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\..\libevent\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -157,12 +157,14 @@
     <ClInclude Include="xtask.h" />
     <ClInclude Include="xthread.h" />
     <ClInclude Include="xthread_pool.h" />
+    <ClInclude Include="xtools.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xcom_task.cpp" />
     <ClCompile Include="xserver_task.cpp" />
     <ClCompile Include="xthread.cpp" />
     <ClCompile Include="xthread_pool.cpp" />
+    <ClCompile Include="xtools.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

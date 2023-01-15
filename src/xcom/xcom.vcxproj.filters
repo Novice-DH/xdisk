@@ -38,6 +38,9 @@
     <ClInclude Include="xmsg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="xtools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xthread.cpp">
@@ -50,6 +53,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="xcom_task.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="xtools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

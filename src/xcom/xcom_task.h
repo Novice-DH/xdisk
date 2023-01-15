@@ -18,11 +18,12 @@ public:
     virtual void EventCB(short what);
     // 读取数据回调函数
     virtual void ReadCB();
-
-    // 接收到消息的回调，由业务类重载
+    // 接收到消息的回调，由业务类重写
     virtual void ReadCB(const XMsg *msg);
     // 发送消息数据包
     virtual bool WriteCB(const XMsg *msg);
+    // 连接成功的消息回调，由业务类重写
+    virtual void ConnectedCB(){};
 
     // 子类亦可访问
 protected:

@@ -13,6 +13,13 @@ XDiskGUI::XDiskGUI(QWidget *parent)
     // 每个模块在使用时，都主动初始化
     // 不要将初始化放在构造函数中，较难控制
     XDiskClient::Get()->Init();
+
+    // 注册信号支持的类型
+    qRegisterMetaType<std::string>("std::string");
+
+    // 绑定目录获取的信号
+    QObject::connect(XDiskClient::Get(), SIGNAL(SDir(std::string)),
+                     this, SLOT(UpdateDir(std::string)));
 }
 
 XDiskGUI::~XDiskGUI()
@@ -30,11 +37,37 @@ void XDiskGUI::Refresh()
     XDiskClient::Get()->set_server_root(root);
     XDiskClient::Get()->GetDir();
 
-    //QMessageBox::information(this, "", "Refresh");
+    // QMessageBox::information(this, "", "Refresh");
 
     // 1 连接服务器
 
     // 设置回调
+}
+
+void XDiskGUI::UpdateDir(string dirs)
+{
+    // QMessageBox::information(this, "", dirs.c_str());
+    //  "file1,1024;file2,4096;file3.zip,10240"
+    QString str = dirs.c_str();
+    str = str.trimmed();
+    if (str.isEmpty()) // 略过空串
+    {
+        return;
+    }
+    QStringList filestr = str.split(';');
+    ui.filelistWidget->setRowCount(filestr.size());
+    for (int i = 0; i < filestr.size(); ++i)
+    {
+        QStringList fileinfo = filestr[i].split(',');
+        if (fileinfo.size() != 2)
+        {
+            continue; // 略过有误数据
+        }
+        // 插入到列表
+        // ui.filelistWidget->insertRow(0); // 插入在首行
+        ui.filelistWidget->setItem(i, 0, new QTableWidgetItem(fileinfo[0]));
+        ui.filelistWidget->setItem(i, 1, new QTableWidgetItem(tr("%1Byte").arg(fileinfo[1])));
+    }
 }
 
 void XDiskGUI::Upload()

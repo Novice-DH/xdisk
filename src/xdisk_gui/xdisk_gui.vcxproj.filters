@@ -32,9 +32,15 @@
     <ClCompile Include="xdisk_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="xdir_task.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="xdisk_gui.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="xdisk_client.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -44,7 +50,7 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="xdisk_client.h">
+    <ClInclude Include="xdir_task.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
