@@ -14,9 +14,11 @@
 enum MsgType
 {
     MSG_NONE = 0,
-    MSG_GETDIR,      // 请求目录
-    MSG_DIRLIST,     // 返回目录列表
-    MSG_UPLOAD_INFO, // 请求上传文件
+    MSG_GETDIR,          // 请求目录
+    MSG_DIRLIST,         // 返回目录列表
+    MSG_UPLOAD_INFO,     // 请求上传文件
+    MSG_UPLOAD_ACCEPT,   // 服务端准备好接收文件
+    MSG_UPLOAD_COMPLETE, // 服务端接收文件结束
 
     MSG_MAX_TYPE, // 用来验证消息类型正确
 };

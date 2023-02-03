@@ -40,9 +40,11 @@ void XComTask::EventCB(short what)
 
 static void SWriteCB(struct bufferevent *bev, void *ctx)
 {
+    auto task = (XComTask *)ctx;
+    task->WriteCB();
 }
 
-bool XComTask::WriteCB(const XMsg *msg)
+bool XComTask::Write(const XMsg *msg)
 {
     if (!bev_ || !msg || !msg->data || msg->size <= 0)
     {
@@ -63,6 +65,30 @@ bool XComTask::WriteCB(const XMsg *msg)
     return true;
 }
 
+bool XComTask::Write(const void *data, int size)
+{
+    if (!bev_ || !data || size <= 0)
+    {
+        return false;
+    }
+    int re = bufferevent_write(bev_, data, size);
+    if (re != 0)
+    {
+        return false;
+    }
+    return true;
+}
+
+// 激活写入回调
+void XComTask::BeginWrite()
+{
+    if (!bev_)
+    {
+        return;
+    }
+    bufferevent_trigger(bev_, EV_WRITE, 0);
+}
+
 static void SReadCB(struct bufferevent *bev, void *ctx)
 {
     auto task = (XComTask *)ctx;
@@ -79,13 +105,23 @@ void XComTask::ReadCB()
 {
     for (;;) // 确保边缘触发能读取到 bufferevent 里所有数据
     {
+        if (!is_recv_msg_) // 不再需要消息接收，只传输文件
+        {
+            int len = bufferevent_read(bev_, read_buf_, sizeof(read_buf_));
+            if (len <= 0)
+            {
+                return;
+            }
+            ReadCB(read_buf_, len);
+            continue;
+        }
         // 接收消息 XMsgHead
         // 1 接收头部消息
         if (!msg_.data)
         {
             int headsize = sizeof(XMsgHead); // 8 Byte
             int len = bufferevent_read(bev_, &msg_, headsize);
-            if (!len) // 已读取完，但因为循环第 2 次进入，此时 len = 0
+            if (len <= 0) // 已读取完，但因为循环第 2 次进入，此时 len = 0
             {
                 return;
             }
@@ -150,7 +186,7 @@ bool XComTask::Init()
     bufferevent_setcb(bev_, SReadCB, SWriteCB, SEventCB, this);
     bufferevent_enable(bev_, EV_READ | EV_WRITE); // 设置权限
 
-    timeval tv = { 10, 0 };
+    timeval tv = {10, 0};
     bufferevent_set_timeouts(bev_, &tv, &tv);
 
     // 连接服务器

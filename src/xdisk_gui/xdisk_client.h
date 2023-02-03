@@ -35,6 +35,7 @@ public:
 
 signals:
     void SDir(std::string dirs);
+    void SUploadComplete();
 
 private:
     // 服务器 IP

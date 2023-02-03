@@ -25,5 +25,5 @@ void XDirTask::ConnectedCB()
     msg.type = MSG_GETDIR;
     msg.size = server_root_.size() + 1;
     msg.data = (char *)server_root_.c_str();
-    WriteCB(&msg);
+    Write(&msg);
 }

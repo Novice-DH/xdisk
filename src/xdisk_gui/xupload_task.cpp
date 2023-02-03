@@ -1,12 +1,47 @@
 ﻿#include "xupload_task.h"
 #include <iostream>
-// #include <cstring>
 
 using namespace std;
 
 // 接收到消息的回调
 void XUploadTask::ReadCB(const XMsg *msg)
 {
+    switch (msg->type)
+    {
+    case MSG_UPLOAD_ACCEPT:
+        BeginWrite();
+        break;
+    case MSG_UPLOAD_COMPLETE:
+        // 界面刷新
+        if (UploadCB)
+        {
+            UploadCB();
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+// 写入数据回调函数
+void XUploadTask::WriteCB()
+{
+    if (!ifs_.is_open())
+    {
+        return;
+    }
+    ifs_.read(read_buf_, sizeof(read_buf_));
+    int len = ifs_.gcount(); // 读取的长度
+    if (len <= 0)
+    {
+        ifs_.close();
+        return;
+    }
+    Write(read_buf_, len);
+    if (ifs_.eof()) // 文件已读到结尾
+    {
+        ifs_.close();
+    }
 }
 
 // 连接成功的消息回调
@@ -44,5 +79,5 @@ void XUploadTask::ConnectedCB()
     msg.type = MSG_UPLOAD_INFO;
     msg.data = data;
     msg.size = strlen(data) + 1;
-    WriteCB(&msg);
+    Write(&msg);
 }

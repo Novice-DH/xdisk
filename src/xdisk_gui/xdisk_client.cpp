@@ -19,6 +19,12 @@ static void DirCB(string dirs)
     XDiskClient::Get()->SDir(dirs);
 }
 
+static void UploadCB()
+{
+    cout << "UploadCB" << endl;
+    XDiskClient::Get()->SUploadComplete();
+}
+
 /**
  * @brief 获取目录下的文件列表，只是发送请求消息到服务端
  */
@@ -48,5 +54,6 @@ void XDiskClient::Upload(std::string filepath)
     task->set_server_ip(server_ip_);
     task->set_port(server_port_);
     task->set_filepath(filepath);
+    task->UploadCB = UploadCB;
     XThreadPool::Get()->Dispatch(task);
 }
