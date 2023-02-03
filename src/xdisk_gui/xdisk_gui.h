@@ -10,6 +10,7 @@ class XDiskGUI : public QWidget
 public:
     XDiskGUI(QWidget *parent = nullptr);
     ~XDiskGUI();
+    void UpdateServerInfo();
 public slots:
     void Refresh();
     void UpdateDir(std::string dirs);

@@ -14,7 +14,8 @@ void XFileServerTask::ReadCB(const XMsg *msg)
         cout << "MSG_GETDIR" << endl;
         GetDir(msg);
         break;
-
+    case MSG_UPLOAD_INFO:
+        cout << "MSG_UPLOAD_INFO" << endl;
     default:
         break;
     }

@@ -1,5 +1,6 @@
 #include "xdisk_client.h"
 #include "xdir_task.h"
+#include "xupload_task.h"
 #include "xthread_pool.h"
 #include <iostream>
 #include <string>
@@ -34,4 +35,18 @@ void XDiskClient::GetDir()
     XThreadPool::Get()->Dispatch(task);
 
     // 此时不能操作，task 未初始化，task 没有 event_base
+}
+
+/**
+ * @brief 上传文件请求
+ *
+ * @param filepath 本地文件路径
+ */
+void XDiskClient::Upload(std::string filepath)
+{
+    auto task = new XUploadTask();
+    task->set_server_ip(server_ip_);
+    task->set_port(server_port_);
+    task->set_filepath(filepath);
+    XThreadPool::Get()->Dispatch(task);
 }

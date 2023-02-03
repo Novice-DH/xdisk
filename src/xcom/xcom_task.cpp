@@ -150,7 +150,7 @@ bool XComTask::Init()
     bufferevent_setcb(bev_, SReadCB, SWriteCB, SEventCB, this);
     bufferevent_enable(bev_, EV_READ | EV_WRITE); // 设置权限
 
-    timeval tv = {10, 0};
+    timeval tv = { 10, 0 };
     bufferevent_set_timeouts(bev_, &tv, &tv);
 
     // 连接服务器

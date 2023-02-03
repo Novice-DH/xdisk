@@ -22,6 +22,13 @@ public:
      */
     void GetDir();
 
+    /**
+     * @brief 上传文件请求
+     *
+     * @param filepath 本地文件路径
+     */
+    void Upload(std::string filepath);
+
     void set_server_ip(std::string ip) { this->server_ip_ = ip; }
     void set_server_root(std::string root) { this->server_root_ = root; }
     void set_port(int port) { this->server_port_ = port; }
@@ -39,5 +46,5 @@ private:
     // 服务器端口
     int server_port_ = 0;
 
-    XDiskClient() {};
+    XDiskClient(){};
 };

@@ -15,6 +15,7 @@
     <ClCompile Include="xdir_task.cpp" />
     <ClCompile Include="xdisk_client.cpp" />
     <ClCompile Include="xdisk_gui.cpp" />
+    <ClCompile Include="xupload_task.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="xdisk_gui.h" />
@@ -24,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xdir_task.h" />
+    <ClInclude Include="xupload_task.h" />
     <QtMoc Include="xdisk_client.h" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +83,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\libevent\include;..\xcom;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
