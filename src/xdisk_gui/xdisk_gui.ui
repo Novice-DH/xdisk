@@ -30,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>500</x>
-     <y>490</y>
+     <y>380</y>
      <width>141</width>
      <height>61</height>
     </rect>
@@ -47,6 +47,9 @@
      <width>451</width>
      <height>611</height>
     </rect>
+   </property>
+   <property name="selectionBehavior">
+    <enum>QAbstractItemView::SelectRows</enum>
    </property>
    <column>
     <property name="text">
@@ -140,6 +143,19 @@
     <string>服务器 端口</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="downloadButton">
+   <property name="geometry">
+    <rect>
+     <x>500</x>
+     <y>470</y>
+     <width>141</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>下载</string>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -170,7 +186,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>600</x>
-     <y>490</y>
+     <y>380</y>
     </hint>
     <hint type="destinationlabel">
      <x>655</x>
@@ -178,9 +194,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>downloadButton</sender>
+   <signal>clicked()</signal>
+   <receiver>XDiskGUIClass</receiver>
+   <slot>Download()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>607</x>
+     <y>520</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>742</x>
+     <y>555</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>Refresh()</slot>
   <slot>Upload()</slot>
+  <slot>Download()</slot>
  </slots>
 </ui>

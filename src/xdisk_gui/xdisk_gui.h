@@ -15,6 +15,9 @@ public slots:
     void Refresh();
     void UpdateDir(std::string dirs);
     void Upload();
+    void Download();
+    void DownloadComplete();
+
 private:
     Ui::XDiskGUIClass ui;
 };

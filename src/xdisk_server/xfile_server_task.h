@@ -9,7 +9,7 @@ class XFileServerTask : public XComTask
 {
 public:
     // 接收到消息的回调
-    virtual void ReadCB(const XMsg *msg);
+    virtual bool ReadCB(const XMsg *msg);
 
     // 当关闭消息接收时，数据将发送到此函数，由业务模块重写
     virtual void ReadCB(void *data, int size);

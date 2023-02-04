@@ -23,7 +23,8 @@ public:
     virtual void ReadCB();
 
     // 接收到消息的回调，由业务类重写
-    virtual void ReadCB(const XMsg *msg);
+    // 返回 true 正常，返回 false 退出当前的消息处理，不再处理下一条消息
+    virtual bool ReadCB(const XMsg *msg) = 0;
 
     // 当关闭消息接收时，数据将发送到此函数，由业务模块重写
     virtual void ReadCB(void *data, int size) {}

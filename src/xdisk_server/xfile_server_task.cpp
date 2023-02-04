@@ -9,7 +9,7 @@ using namespace std;
 string XFileServerTask::cur_dir_ = "./";
 mutex XFileServerTask::cur_dir_mux_;
 
-void XFileServerTask::ReadCB(const XMsg *msg)
+bool XFileServerTask::ReadCB(const XMsg *msg)
 {
     switch (msg->type)
     {
@@ -29,10 +29,12 @@ void XFileServerTask::ReadCB(const XMsg *msg)
         cout << "MSG_DOWNLOAD_COMPLETE" << endl;
         // 清理网络资源
         Close();
+        return false;
         break;
     default:
         break;
     }
+    return true;
 }
 
 // 当关闭消息接收时，数据将发送到此函数，由业务模块重写
@@ -181,9 +183,12 @@ void XFileServerTask::Download(const XMsg *msg)
     cout << "open file " << filepath_ << " success!" << endl;
 
     // 3 回复 MSG_DOWNLOAD_ACCEPT
+    char buf[32] = {0};
+    // use _CRT_SECURE_NO_WARNINGS
+    sprintf(buf, "%d", filesize_);
     XMsg resmsg;
     resmsg.type = MSG_DOWNLOAD_ACCEPT;
-    resmsg.size = 3; // +1 发送 \0
-    resmsg.data = (char *)"OK";
+    resmsg.size = strlen(buf) + 1; // +1 发送 \0
+    resmsg.data = buf;             // 告知客户端 文件大小
     Write(&resmsg);
 }

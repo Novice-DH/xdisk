@@ -1,10 +1,4 @@
-﻿/*
- * @Author: hey-DH_go
- * @Date: 2023-01-14 07:06:21
- * @LastEditTime: 2023-02-04 17:24:23
- * @LastEditors: hey-DH_go
- */
-#ifndef XMSG_H
+﻿#ifndef XMSG_H
 #define XMSG_H
 
 #ifdef _WIN32

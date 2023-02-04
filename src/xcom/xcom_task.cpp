@@ -13,6 +13,13 @@ void XComTask::Close()
         bufferevent_free(bev_);
     }
     bev_ = NULL;
+
+    if (msg_.data)
+    {
+        delete msg_.data;
+    }
+    memset(&msg_, 0, sizeof(msg_));
+    delete this; // 释放对象空间
 }
 
 static void SEventCB(struct bufferevent *bev, short what, void *ctx)
@@ -37,13 +44,14 @@ void XComTask::EventCB(short what)
     {
         cout << "BEV_EVENT_ERROR or BEV_EVENT_TIMEOUT" << endl;
         // 清理资源，考虑缓冲区
-        bufferevent_free(bev_);
+        // bufferevent_free(bev_); // 对象空间并没有释放掉
+        Close();
     }
 
     if (what & BEV_EVENT_EOF)
     {
         cout << "BEV_EVENT_EOF" << endl;
-        bufferevent_free(bev_);
+        Close();
     }
 }
 
@@ -104,14 +112,19 @@ static void SReadCB(struct bufferevent *bev, void *ctx)
     task->ReadCB();
 }
 
-void XComTask::ReadCB(const XMsg *msg)
-{
-    cout << "recv Msg type= " << msg->type << " size= " << msg->size << endl;
-}
+// bool XComTask::ReadCB(const XMsg *msg)
+//{
+//     cout << "recv Msg type= " << msg->type << " size= " << msg->size << endl;
+//     return true;
+// }
 
 // 接收数据包
 void XComTask::ReadCB()
 {
+    if (!bev_)
+    {
+        return;
+    }
     for (;;) // 确保边缘触发能读取到 bufferevent 里所有数据
     {
         if (!is_recv_msg_) // 不再需要消息接收，只传输文件
@@ -166,7 +179,12 @@ void XComTask::ReadCB()
         {
             // 处理消息，释放空间
             cout << "recved msg: " << msg_.size << endl;
-            ReadCB(&msg_);
+            // 若在其中清理了 bev_ 甚至对象
+            // ReadCB(&msg_); // 该函数被调用之后，对象也被清理了
+            if (!ReadCB(&msg_))
+            {
+                return;
+            }
             delete msg_.data;
             memset(&msg_, 0, sizeof(msg_));
         }
@@ -213,6 +231,5 @@ bool XComTask::Init()
     {
         return false;
     }
-
     return true;
 }

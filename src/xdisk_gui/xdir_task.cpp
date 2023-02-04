@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void XDirTask::ReadCB(const XMsg *msg)
+bool XDirTask::ReadCB(const XMsg *msg)
 {
     // 接收到服务端发送的目录
     switch (msg->type)
@@ -16,6 +16,7 @@ void XDirTask::ReadCB(const XMsg *msg)
     default:
         break;
     }
+    return true;
 }
 
 // 连接成功的消息回调

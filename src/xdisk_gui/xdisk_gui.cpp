@@ -25,6 +25,10 @@ XDiskGUI::XDiskGUI(QWidget *parent)
     QObject::connect(XDiskClient::Get(), SIGNAL(SUploadComplete()),
                      this, SLOT(Refresh()));
 
+    // 绑定下载成功后获取的信号
+    QObject::connect(XDiskClient::Get(), SIGNAL(SDownloadComplete()),
+                     this, SLOT(DownloadComplete()));
+
     // 弹出界面就刷新一次
     Refresh();
 }
@@ -84,7 +88,7 @@ void XDiskGUI::UpdateDir(string dirs)
 
 void XDiskGUI::Upload()
 {
-    // 用户选择一个文件
+    // 用户选择一个文件上传
     QString filename = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("请选择上传文件"));
     if (filename.isEmpty())
     {
@@ -97,4 +101,34 @@ void XDiskGUI::Upload()
     // ui.filelistWidget->insertRow(0); // 插入在首行
     // ui.filelistWidget->setItem(0, 0, new QTableWidgetItem(filename));
     // ui.filelistWidget->setItem(0, 1, new QTableWidgetItem(tr("%1Byte").arg(100)));
+}
+
+void XDiskGUI::Download()
+{
+    UpdateServerInfo();
+    // 用户选择一个文件、路径 下载
+    int row = ui.filelistWidget->currentRow(); // 选择当前弹出界面的目标行
+    if (row < 0)
+    {
+        QMessageBox::information(this, "", QString::fromLocal8Bit("请选择下载文件"));
+        return;
+    }
+    // 获取下载文件名
+    auto item = ui.filelistWidget->item(row, 0); // 0 表示 列表第 1 列，为文件名
+    string filename = item->text().toStdString();
+    // 获取下载路径
+    QString localpath = QFileDialog::getExistingDirectory(this, QString::fromLocal8Bit("请选择下载路径"));
+    if (localpath.isEmpty())
+    {
+        return;
+    }
+    string filepath = ui.pathEdit->text().toStdString();
+    filepath += "/";
+    filepath += filename;
+    XDiskClient::Get()->Download(filepath, localpath.toStdString());
+}
+
+void XDiskGUI::DownloadComplete()
+{
+    QMessageBox::information(this, "", "Download Complete");
 }

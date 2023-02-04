@@ -1,6 +1,7 @@
 #include "xdisk_client.h"
 #include "xdir_task.h"
 #include "xupload_task.h"
+#include "xdownload_task.h"
 #include "xthread_pool.h"
 #include <iostream>
 #include <string>
@@ -17,12 +18,6 @@ static void DirCB(string dirs)
 {
     cout << dirs << endl;
     XDiskClient::Get()->SDir(dirs);
-}
-
-static void UploadCB()
-{
-    cout << "UploadCB" << endl;
-    XDiskClient::Get()->SUploadComplete();
 }
 
 /**
@@ -43,6 +38,12 @@ void XDiskClient::GetDir()
     // 此时不能操作，task 未初始化，task 没有 event_base
 }
 
+static void UploadCB()
+{
+    cout << "UploadCB" << endl;
+    XDiskClient::Get()->SUploadComplete();
+}
+
 /**
  * @brief 上传文件请求
  *
@@ -55,5 +56,28 @@ void XDiskClient::Upload(std::string filepath)
     task->set_port(server_port_);
     task->set_filepath(filepath);
     task->UploadCB = UploadCB;
+    XThreadPool::Get()->Dispatch(task);
+}
+
+static void DownloadCB()
+{
+    cout << "DownloadCB" << endl;
+    XDiskClient::Get()->SDownloadComplete();
+}
+
+/**
+ * @brief 下载文件请求
+ *
+ * @param serverpath 远端文件的相对路径
+ * @param localdir 本地存储的目录
+ */
+void XDiskClient::Download(std::string serverpath, std::string localdir)
+{
+    auto task = new XDownLoadTask();
+    task->set_server_ip(server_ip_);
+    task->set_port(server_port_);
+    task->set_filepath(serverpath);
+    task->set_localdir(localdir);
+    task->DownloadCB = DownloadCB;
     XThreadPool::Get()->Dispatch(task);
 }

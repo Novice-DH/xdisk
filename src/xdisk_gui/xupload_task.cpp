@@ -4,7 +4,7 @@
 using namespace std;
 
 // 接收到消息的回调
-void XUploadTask::ReadCB(const XMsg *msg)
+bool XUploadTask::ReadCB(const XMsg *msg)
 {
     switch (msg->type)
     {
@@ -21,6 +21,7 @@ void XUploadTask::ReadCB(const XMsg *msg)
     default:
         break;
     }
+    return true;
 }
 
 // 写入数据回调函数

@@ -8,7 +8,7 @@ class XDirTask : public XComTask
 {
 public:
     // 接收到消息的回调
-    virtual void ReadCB(const XMsg *msg);
+    virtual bool ReadCB(const XMsg *msg);
     // 连接成功的消息回调
     virtual void ConnectedCB();
 
