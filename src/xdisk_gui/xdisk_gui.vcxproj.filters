@@ -38,6 +38,9 @@
     <ClCompile Include="xupload_task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="xdownload_task.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="xdisk_gui.h">
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="xupload_task.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xdownload_task.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿#ifndef XFILE_SERVER_TASK_H
+#define XFILE_SERVER_TASK_H
+
 #include "xcom_task.h"
 #include <fstream>
 #include <mutex>
@@ -11,6 +13,9 @@ public:
 
     // 当关闭消息接收时，数据将发送到此函数，由业务模块重写
     virtual void ReadCB(void *data, int size);
+
+    // 写入数据回调函数
+    virtual void WriteCB();
 
     static void set_cur_dir(std::string dir)
     {
@@ -33,17 +38,28 @@ private:
     // 处理客户端的上传请求
     void Upload(const XMsg *msg);
 
+    // 处理客户端的下载请求
+    void Download(const XMsg *msg);
+
     // 文件大小
     int filesize_ = 0;
 
     // 客户已上传的文件大小
-    int upload_size_ = 0;
+    int recv_size_ = 0;
+
+    // 文件路径
+    std::string filepath_;
 
     // 当前路径
     // std::string cur_dir_ = "./";
     static std::string cur_dir_;
     static std::mutex cur_dir_mux_;
 
-    // 写入上传的文件
+    // 写入接收的文件
     std::ofstream ofs_;
+
+    // 读取下载的文件
+    std::ifstream ifs_;
 };
+
+#endif

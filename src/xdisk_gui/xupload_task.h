@@ -23,12 +23,12 @@ public:
     UploadCBFunc UploadCB = 0;
 
 private:
+    // 暂时不支持大于 2GB 的文件
+    int filesize_ = 0;
+
     // 需要上传的文件路径
     std::string filepath_ = "";
 
     // 读取文件
     std::ifstream ifs_;
-
-    // 暂时不支持大于 2GB 的文件
-    int filesize_ = 0;
 };

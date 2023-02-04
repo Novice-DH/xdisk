@@ -1,5 +1,4 @@
-﻿
-#ifndef XCOM_TASK_H
+﻿#ifndef XCOM_TASK_H
 #define XCOM_TASK_H
 
 #include "xtask.h"
@@ -11,6 +10,8 @@ class XCOM_API XComTask : public XTask
 public:
     // 初始化 bufferevent，客户端建立连接
     virtual bool Init();
+
+    virtual void Close();
 
     void set_server_ip(std::string ip) { this->server_ip_ = ip; }
     void set_port(int port) { this->server_port_ = port; }

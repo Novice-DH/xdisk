@@ -6,6 +6,15 @@
 
 using namespace std;
 
+void XComTask::Close()
+{
+    if (bev_)
+    {
+        bufferevent_free(bev_);
+    }
+    bev_ = NULL;
+}
+
 static void SEventCB(struct bufferevent *bev, short what, void *ctx)
 {
     auto task = (XComTask *)ctx;
