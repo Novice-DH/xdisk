@@ -3,6 +3,7 @@
 libevent
 openssl
 zlib
+protobuf_3.8.0cpp_sdk
 
 # temp files directories
 .vs
@@ -10,6 +11,8 @@ x64
 Debug
 bin
 lib
+protoc.exe
+build_pb.bat
 # cache/
 # log/
 # *.swp

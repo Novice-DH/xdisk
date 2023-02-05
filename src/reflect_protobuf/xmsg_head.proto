@@ -1,0 +1,6 @@
+﻿syntax="proto3"; // 协议版本号
+package xmsg; // C++ 命名空间
+message XMsgHead{
+	int32 msg_size = 1;
+	string msg_str = 2;
+}
